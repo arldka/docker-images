@@ -1,0 +1,30 @@
+name: "Trivy Scan Latest Images"
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+
+  pull_request:
+jobs:
+  build:
+    name: Test Images
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        image: ['helm-charts']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "ghcr.io/arldka/${{ matrix.image }}:latest"
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
