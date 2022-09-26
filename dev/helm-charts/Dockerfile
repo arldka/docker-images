@@ -1,24 +1,28 @@
 FROM gitpod/workspace-base:2022-09-26-11-35-42
 
+ENV HELM_VERSION=3.10.0
+ENV HELM_DOCS_VERSION=1.11.0
+ENV KUBE_VERSION=v1.25.2
+
 USER root
-RUN useradd -m -s /bin/bash linuxbrew && \
-    usermod -aG sudo linuxbrew &&  \
-    mkdir -p /home/linuxbrew/.linuxbrew && \
-    chown -R linuxbrew: /home/linuxbrew/.linuxbrew && \
-    chown -R linuxbrew: /home/gitpod && \
-    chown -R gitpod /home/linuxbrew/.linuxbrew
 
-USER linuxbrew
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+# Install Helm
+RUN curl -sSL -o /tmp/helm.tar.gz "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
+    && tar xvf /tmp/helm.tar.gz -C /tmp \
+    && mv /tmp/linux-amd64/helm /usr/local/bin
 
-ENV PATH="/home/linuxbrew/.linuxbrew/bin:${PATH}"
+# Install Helm-Docs
+RUN curl -sSL -o /tmp/helm-docs.tar.gz "https://github.com/norwoodj/helm-docs/releases/download/v${HELM_DOCS_VERSION}/helm-docs_${HELM_DOCS_VERSION}_Linux_x86_64.tar.gz" \
+    && tar xvf /tmp/helm-docs.tar.gz -C /tmp\
+    && mv /tmp/helm-docs /usr/local/bin
+
+# Install Kubectl
+RUN curl -OL "https://dl.k8s.io/release/${KUBE_VERSION}/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl \
+    && mv kubectl /usr/local/bin
+
 
 USER gitpod
-RUN brew install \
-    helm \
-    norwoodj/tap/helm-docs \
-    pre-commit \
-    kubectl
 
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 COPY template.zshrc $HOME/.zshrc
