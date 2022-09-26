@@ -21,6 +21,7 @@ RUN curl -OL "https://dl.k8s.io/release/${KUBE_VERSION}/bin/linux/amd64/kubectl"
     && chmod +x kubectl \
     && mv kubectl /usr/local/bin
 
+
 USER gitpod
 
 # Install ZSH
