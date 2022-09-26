@@ -24,6 +24,7 @@ RUN curl -OL "https://dl.k8s.io/release/${KUBE_VERSION}/bin/linux/amd64/kubectl"
 
 USER gitpod
 
+# Install ZSH and setup template
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 COPY template.zshrc $HOME/.zshrc
 
