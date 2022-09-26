@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'dev/**'
     - ".github/workflows/containers.build.yaml"
