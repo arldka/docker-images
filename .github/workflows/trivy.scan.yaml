@@ -3,8 +3,7 @@ name: "Trivy Scan Latest Images"
 on:
   schedule:
     - cron: '0 9 * * *'
-
-  pull_request:
+    
 jobs:
   build:
     name: Test Images
